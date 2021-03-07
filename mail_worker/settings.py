@@ -10,3 +10,5 @@ PASSWORD = os.environ.get('PASSWORD')
 IMAP_SERVER = os.environ.get('IMAP_SERVER')
 
 DIRECTORY_TO_SAVE_FILES = os.environ.get('DIRECTORY_TO_SAVE_FILES')
+
+MENU_FOLDER_NAME = os.environ.get('MENU_FOLDER_NAME')

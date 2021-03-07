@@ -1,4 +1,7 @@
 import imaplib
+import shlex
+
+from .imaputf7 import imaputf7decode, imaputf7encode
 
 
 class MailWorker:
@@ -18,6 +21,17 @@ class MailWorker:
             return True
         return False
 
+    def get_folder_list(self):
+        status, folder_list = self.mail.list()
+        if status == 'OK':
+            return [shlex.split(imaputf7decode(folder.decode()))[-1] for folder in folder_list]
+        else:
+            return None
 
-
+    def select_folder(self, folder_name):
+        status, data = self.mail.select(imaputf7encode(folder_name))
+        if status == 'OK':
+            return True
+        else:
+            return False
 
