@@ -37,10 +37,10 @@ def start_process():
 
 if __name__ == "__main__":
     # start_process()
-    sw = SiteWorker()
+    sw = SiteWorker(base=BASE_SCHOOL_SITE_ADDR)
     if sw.connected:
         if not sw.authorize(login=SITE_LOGIN, password=SITE_PASSWORD):
             pass
         else:
-            pass
+            sw.get_tomorrow_menu_folder(id=TOMORROW_MENU_FOLDER_ID)
             # print(sw.get_url('/private_office/adverts'))
