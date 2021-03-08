@@ -36,4 +36,11 @@ def start_process():
 
 
 if __name__ == "__main__":
-    start_process()
+    # start_process()
+    sw = SiteWorker()
+    if sw.connected:
+        if not sw.authorize(login=SITE_LOGIN, password=SITE_PASSWORD):
+            pass
+        else:
+            pass
+            # print(sw.get_url('/private_office/adverts'))
