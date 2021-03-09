@@ -1,3 +1,4 @@
+import json
 import os
 
 from prettytable import PrettyTable
@@ -42,9 +43,9 @@ if __name__ == "__main__":
         if not sw.authorize(login=SITE_LOGIN, password=SITE_PASSWORD):
             pass
         else:
-            # sw.get_folder_info(id=ROOT_FOLDER)
-            # print(sw.search_folder_id(root_folder_id=ROOT_FOLDER, folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE))
-            sw.upload_file(folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE, file_path='./Menus/UK123456.pdf',
-                           root_folder_id=ROOT_FOLDER)
+            # print(json.dumps(sw.get_file_info(id=ROOT_FOLDER), indent=4, sort_keys=True))
+            print(sw.search_folder_id(root_folder_id=ROOT_FOLDER, folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE))
+            # sw.upload_file(folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE, file_path='./fon2.png',
+            #                root_folder_id=ROOT_FOLDER)
             # sw.get_folder_info(id=TOMORROW_MENU_FOLDER_ID)
             # print(sw.get_url('/private_office/adverts'))

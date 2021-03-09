@@ -64,14 +64,20 @@ class SiteWorker(requests.Session):
         return {search_folder_name: files.get(search_folder_name)}
 
     def get_file_info(self, id):
+        print(f'Searching file id: {id}')
         self.headers.update({'Accept': 'application/json, text/javascript, */*; q=0.01'})
         response = self.get(self.base + '/elfinder/files')
         if response.status_code != 200:
             print('Something is wrong!')
             return
-        request_str = self.base + '/efconnect/files?mode='
-        request_str += f'&cmd=open&target={id}'
-        response = self.get(request_str)
+        while (True):
+            request_str = self.base + '/efconnect/files?mode='
+            request_str += f'&cmd=open&target={id}'
+            response = self.get(request_str)
+            if response.status_code == 200:
+                break
+            else:
+                print('Trying again...')
         return response.json()
 
     def get_url(self, url):
@@ -97,7 +103,7 @@ class SiteWorker(requests.Session):
             print(m.content_type)
             self.headers.update(
                 {'Content-Length': str(len(binary_file))})
-            print(m.encode('utf-8'))
+            print(str(binary_file).encode('utf-8'))
             response = self.post(self.base + '/efconnect/files?mode=',
                                  json=data)
             if response.status_code == 200:
