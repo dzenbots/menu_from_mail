@@ -4,7 +4,7 @@ import os
 from prettytable import PrettyTable
 
 from mail_worker import *
-
+from site_worker import *
 
 def get_correct_filename(email_subject):
     return 'UK' + email_subject.split(' ')[1].split('УК')[-1] + '.pdf'
@@ -44,8 +44,8 @@ if __name__ == "__main__":
             pass
         else:
             # print(json.dumps(sw.get_file_info(id=ROOT_FOLDER), indent=4, sort_keys=True))
-            print(sw.search_folder_id(root_folder_id=ROOT_FOLDER, folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE))
-            # sw.upload_file(folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE, file_path='./fon2.png',
-            #                root_folder_id=ROOT_FOLDER)
+            # print(sw.search_folder_id(root_folder_id=ROOT_FOLDER, folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE))
+            sw.upload_file(folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE, file_path='./fon2.png',
+                           root_folder_id=ROOT_FOLDER)
             # sw.get_folder_info(id=TOMORROW_MENU_FOLDER_ID)
             # print(sw.get_url('/private_office/adverts'))
