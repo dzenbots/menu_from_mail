@@ -6,6 +6,7 @@ from prettytable import PrettyTable
 from mail_worker import *
 from site_worker import *
 
+
 def get_correct_filename(email_subject):
     return 'UK' + email_subject.split(' ')[1].split('УК')[-1] + '.pdf'
 
@@ -38,14 +39,12 @@ def start_process():
 
 if __name__ == "__main__":
     # start_process()
-    sw = SiteWorker(base=BASE_SCHOOL_SITE_ADDR)
-    if sw.connected:
-        if not sw.authorize(login=SITE_LOGIN, password=SITE_PASSWORD):
-            pass
-        else:
-            # print(json.dumps(sw.get_file_info(id=ROOT_FOLDER), indent=4, sort_keys=True))
-            # print(sw.search_folder_id(root_folder_id=ROOT_FOLDER, folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE))
-            sw.upload_file(folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE, file_path='./fon2.png',
+    sw = SiteWorker(base_url=BASE_SCHOOL_SITE_ADDR, login=SITE_LOGIN, password=SITE_PASSWORD)
+    if sw.authorized:
+        # print(json.dumps(sw.get_file_info(file_id=ROOT_FOLDER), indent=4, sort_keys=True))
+        # print(json.dumps(sw.search_folder(root_folder_id=ROOT_FOLDER, folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE),
+        #                  indent=4, sort_keys=True))
+            sw.upload_file(folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE, file_path='./Menus/UK123456.pdf',
                            root_folder_id=ROOT_FOLDER)
-            # sw.get_folder_info(id=TOMORROW_MENU_FOLDER_ID)
-            # print(sw.get_url('/private_office/adverts'))
+    #         # sw.get_folder_info(id=TOMORROW_MENU_FOLDER_ID)
+    #         # print(sw.get_url('/private_office/adverts'))
