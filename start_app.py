@@ -1,4 +1,3 @@
-import json
 import os
 
 from prettytable import PrettyTable
@@ -36,15 +35,29 @@ def start_process():
     print(table)
     mw.disconnect()
 
+# import PyPDF2
+#
+# path = 'path/to/hello.pdf'
+# path2 = 'path/to/another.pdf'
+# pdfs = [path, path2]
+#
+# writer = PyPDF2.PdfFileWriter()
+#
+# for pdf in pdfs:
+#     reader = PyPDF2.PdfFileReader(pdf)
+#     for i in xrange(reader.numPages):
+#         page = reader.getPage(i)
+#         page.compressContentStreams()
+#         writer.addPage(page)
+#
+# with open('test_out2.pdf', 'wb') as f:
+#     writer.write(f)
+
 
 if __name__ == "__main__":
     # start_process()
     sw = SiteWorker(base_url=BASE_SCHOOL_SITE_ADDR, login=SITE_LOGIN, password=SITE_PASSWORD)
     if sw.authorized:
-        # print(json.dumps(sw.get_file_info(file_id=ROOT_FOLDER), indent=4, sort_keys=True))
-        # print(json.dumps(sw.search_folder(root_folder_id=ROOT_FOLDER, folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE),
-        #                  indent=4, sort_keys=True))
-            sw.upload_file(folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE, file_path='./Menus/UK123456.pdf',
-                           root_folder_id=ROOT_FOLDER)
-    #         # sw.get_folder_info(id=TOMORROW_MENU_FOLDER_ID)
-    #         # print(sw.get_url('/private_office/adverts'))
+        sw.upload_file(folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE,
+                       files=['./Menus/UK123456.pdf', './Menus/UK12345.pdf'],
+                       root_folder_id=ROOT_FOLDER)
