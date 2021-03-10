@@ -3,7 +3,8 @@ import os
 from prettytable import PrettyTable
 
 from mail_worker import *
-from site_worker import *
+from site_worker import SiteWorker, BASE_SCHOOL_SITE_ADDR, SITE_LOGIN, SITE_PASSWORD, \
+    MENU_FOLDER_PATH_IN_SITE_STORAGE, ROOT_FOLDER
 
 
 def get_correct_filename(email_subject):
@@ -34,24 +35,6 @@ def start_process():
 
     print(table)
     mw.disconnect()
-
-# import PyPDF2
-#
-# path = 'path/to/hello.pdf'
-# path2 = 'path/to/another.pdf'
-# pdfs = [path, path2]
-#
-# writer = PyPDF2.PdfFileWriter()
-#
-# for pdf in pdfs:
-#     reader = PyPDF2.PdfFileReader(pdf)
-#     for i in xrange(reader.numPages):
-#         page = reader.getPage(i)
-#         page.compressContentStreams()
-#         writer.addPage(page)
-#
-# with open('test_out2.pdf', 'wb') as f:
-#     writer.write(f)
 
 
 if __name__ == "__main__":
