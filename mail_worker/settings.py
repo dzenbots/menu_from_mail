@@ -13,3 +13,5 @@ DIRECTORY_TO_SAVE_FILES = os.environ.get('DIRECTORY_TO_SAVE_FILES')
 
 MENU_FOLDER_NAME = os.environ.get('MENU_FOLDER_NAME_IN_MAIL_BOX')
 
+PUBLIC_API_KEY1 = os.environ.get('PUBLIC_API_KEY1')  # get if from ilovepdf developer account
+PUBLIC_API_KEY2 = os.environ.get('PUBLIC_API_KEY2')  # get if from ilovepdf developer account

@@ -3,8 +3,8 @@ import os
 from prettytable import PrettyTable
 
 from mail_worker import *
-from site_worker import SiteWorker, BASE_SCHOOL_SITE_ADDR, SITE_LOGIN, SITE_PASSWORD, \
-    MENU_FOLDER_PATH_IN_SITE_STORAGE, ROOT_FOLDER
+# from site_worker import SiteWorker, BASE_SCHOOL_SITE_ADDR, SITE_LOGIN, SITE_PASSWORD, \
+#     MENU_FOLDER_PATH_IN_SITE_STORAGE, ROOT_FOLDER
 
 
 def get_correct_filename(email_subject):
@@ -16,6 +16,9 @@ def start_process():
     if mw.authorize(login=LOGIN, password=PASSWORD):
         print(mw.auth_status)
     folder_list = mw.get_folder_list()
+    if folder_list is None:
+        print("Ошибка при получении списка папок")
+        return
     if MENU_FOLDER_NAME not in folder_list:
         print('Папка с меню не найдена. Завешение работы')
         return
@@ -38,9 +41,12 @@ def start_process():
 
 
 if __name__ == "__main__":
-    # start_process()
-    sw = SiteWorker(base_url=BASE_SCHOOL_SITE_ADDR, login=SITE_LOGIN, password=SITE_PASSWORD)
-    if sw.authorized:
-        sw.upload_file(folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE,
-                       files=['./Menus/UK123456.pdf', './Menus/UK12345.pdf'],
-                       root_folder_id=ROOT_FOLDER)
+    start_process()
+    for item in os.listdir('./Menus'):
+        pdf_compressor = PdfCompressor(public_api_key=PUBLIC_API_KEY1)
+        pdf_compressor.compress_file(filepath='./Menus/' + item, output_directory_path='./Menus_small')
+    # sw = SiteWorker(base_url=BASE_SCHOOL_SITE_ADDR, login=SITE_LOGIN, password=SITE_PASSWORD)
+    # if sw.authorized:
+    #     sw.upload_file(folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE,
+    #                    files=['./Menus/UK123456.pdf', './Menus/UK12345.pdf'],
+    #                    root_folder_id=ROOT_FOLDER)

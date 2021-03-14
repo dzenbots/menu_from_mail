@@ -1,9 +1,12 @@
 import datetime
 import email
 import imaplib
+import os
 import shlex
 from collections import namedtuple
 from email.header import decode_header, make_header
+
+from pylovepdf.tools.compress import Compress
 
 from .imaputf7 import imaputf7decode, imaputf7encode
 
@@ -46,6 +49,7 @@ class MailWorker:
             return None
 
     def select_folder(self, folder_name):
+        self.menu_folder_name = folder_name
         status, data = self.mail.select(imaputf7encode(folder_name))
         if status == 'OK':
             return True
@@ -55,7 +59,7 @@ class MailWorker:
     def get_messages_from_folder(self):
         status, data = self.mail.search(None, "ALL")
         if status == 'OK':
-            messages = []
+            messages = list()
             ids = data[0].split()
             for i in range(len(ids) - 1, -1, -1):
                 cur_id = ids[i]
@@ -75,14 +79,38 @@ class MailWorker:
                                           content=part.get_payload(decode=True)),
 
                             ))
-                    self.mail.copy(cur_id, imaputf7encode('Выложено'))
-                    self.mail.store(cur_id, '+FLAGS', '\Deleted')
-
-                    self.mail.expunge()
-
+                    # self.mail.copy(cur_id, imaputf7encode('Выложено'))
+                    # self.mail.store(cur_id, '+FLAGS', '\Deleted')
             return messages
         return None
 
     def disconnect(self):
+        folder_list = self.get_folder_list()
+        self.select_folder(self.menu_folder_name)
+        status, data = self.mail.search(None, "ALL")
+        if status == 'OK':
+            ids = data[0].split()
+            for i in range(len(ids) - 1, -1, -1):
+                cur_id = ids[i]
+                self.mail.copy(cur_id, imaputf7encode('Выложено'))
+                self.mail.store(cur_id, '+FLAGS', '\Deleted')
+        self.mail.expunge()
         self.mail.close()
         self.mail.logout()
+
+
+class PdfCompressor:
+
+    def __init__(self, public_api_key):
+        self.compressor = Compress(public_api_key, verify_ssl=True, proxies=None)
+
+    def compress_file(self, filepath, output_directory_path):
+        self.compressor.add_file(filepath)
+        self.compressor.compression_level = 'extreme'
+        self.compressor.set_output_folder('./temp')
+        self.compressor.execute()
+        self.compressor.download()
+        file_src = './temp/' + os.listdir('./temp')[0]
+        file_destination = output_directory_path + '/' + os.path.basename(filepath)
+        os.rename(file_src, file_destination)
+        self.compressor.delete_current_task()
