@@ -8,6 +8,7 @@ from email.header import decode_header, make_header
 
 from pylovepdf.tools.compress import Compress
 
+from . import PUBLIC_API_KEY1, PUBLIC_API_KEY2
 from .imaputf7 import imaputf7decode, imaputf7encode
 
 File = namedtuple("File", [
@@ -99,9 +100,16 @@ class MailWorker:
         self.mail.logout()
 
 
+def get_public_key(date=datetime.date.today()):
+    if int(str(date).split('-')[2]) % 2 == 0:
+        return PUBLIC_API_KEY1
+    else:
+        return PUBLIC_API_KEY2
+
+
 class PdfCompressor:
 
-    def __init__(self, public_api_key):
+    def __init__(self, public_api_key=get_public_key()):
         self.compressor = Compress(public_api_key, verify_ssl=True, proxies=None)
 
     def compress_file(self, filepath, output_directory_path):
@@ -114,3 +122,4 @@ class PdfCompressor:
         file_destination = output_directory_path + '/' + os.path.basename(filepath)
         os.rename(file_src, file_destination)
         self.compressor.delete_current_task()
+
