@@ -6,6 +6,7 @@ from prettytable import PrettyTable
 from mail_worker import *
 # from site_worker import SiteWorker, BASE_SCHOOL_SITE_ADDR, SITE_LOGIN, SITE_PASSWORD, \
 #     MENU_FOLDER_PATH_IN_SITE_STORAGE, ROOT_FOLDER
+from mail_worker.mail_worker import get_public_key
 
 
 def get_correct_filename(email_subject):
@@ -32,24 +33,24 @@ def start_process():
         return
     table = PrettyTable(['ID', 'Тема письма', 'Дата получения письма', 'Отправитель'])
     for message in mw.get_messages_from_folder():
-        with open(os.path.join(DIRECTORY_TO_SAVE_FILES, get_correct_filename(str(message.subject))), "wb") as fp:
+
+        with open(os.path.join(DIRECTORY_TO_SAVE_FILES, str(message.subject.uk) + '.pdf'), "wb") as fp:
             fp.write(message.file.content)
             fp.close()
-        table.add_row([str(message.id), message.subject, message.date, message.from_user])
-
+        table.add_row([str(message.id), message.subject.uk + ' ' + str(message.subject.date), message.date, message.from_user])
     print(table)
-    mw.disconnect()
+    # mw.disconnect()
 
 
 if __name__ == "__main__":
-    # start_process()
-    # date = datetime.date.today() #+ datetime.timedelta(days=1)
-    # public_key = get_public_key(date)
+    start_process()
+    date = datetime.date.today() #+ datetime.timedelta(days=1)
+    public_key = get_public_key(date)
     # print(public_key)
-    # # for item in os.listdir('./Menus'):
+    # for item in os.listdir('./Menus'):
     #     pdf_compressor = PdfCompressor(public_api_key=PUBLIC_API_KEY1)
     #     pdf_compressor.compress_file(filepath='./Menus/' + item, output_directory_path='./Menus_small')
-    # sw = SiteWorker(base_url=BASE_SCHOOL_SITE_ADDR, login=SITE_LOGIN, password=SITE_PASSWORD)
+    # # sw = SiteWorker(base_url=BASE_SCHOOL_SITE_ADDR, login=SITE_LOGIN, password=SITE_PASSWORD)
     # if sw.authorized:
     #     sw.upload_file(folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE,
     #                    files=['./Menus/UK123456.pdf', './Menus/UK12345.pdf'],
