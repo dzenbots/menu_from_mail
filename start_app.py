@@ -10,9 +10,12 @@ from mail_worker.mail_worker import get_public_key
 
 
 def get_menus_from_email():
-    mw = MailWorker(server=IMAP_SERVER, save_dir=DIRECTORY_TO_SAVE_FILES)
-    if mw.authorize(login=LOGIN, password=PASSWORD):
-        print(mw.auth_status)
+    mw = MailWorker(server=IMAP_SERVER,
+                    save_dir=DIRECTORY_TO_SAVE_FILES,
+                    menu_folder_name=MENU_FOLDER_NAME)
+    if not mw.authorize(login=LOGIN,
+                        password=PASSWORD):
+        return
     folder_list = mw.get_folder_list()
     if folder_list is None:
         print("Ошибка при получении списка папок")
