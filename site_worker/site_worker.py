@@ -152,11 +152,3 @@ class SiteWorker(requests.Session):
                                          'src': src_folder_id
                                      },
                                      headers={'Content-Type': 'application/json'})
-            print(json.dumps(self.response.json(), sort_keys=True, indent=4))
-            # print(str({
-            #     'cmd': 'paste',
-            #     'dst': target_folder_id,
-            #     'targets[]': id,
-            #     'cut': 0,
-            #     'src': src_folder_id
-            # }))
