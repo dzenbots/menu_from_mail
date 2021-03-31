@@ -7,6 +7,8 @@ import requests
 from bs4 import BeautifulSoup
 from requests_toolbelt import MultipartEncoder
 
+from site_worker import ROOT_FOLDER
+
 
 class SiteWorker(requests.Session):
 
@@ -119,4 +121,42 @@ class SiteWorker(requests.Session):
             print('.', end='')
         if self.response.status_code == 200:
             print(' OK')
-            # print(json.dumps(self.response.json(), sort_keys=True, indent=4))
+
+    def delete_all_in_folder(self, folder_path):
+        folder_info = self.search_folder(root_folder_id=ROOT_FOLDER, folder_path=folder_path)
+        folder_content = self.get_file_info(filename=folder_path.split('/')[-1],
+                                            file_id=folder_info.popitem())
+        target_files = {item.get('name'): item.get('hash') for item in folder_content.get('files')}
+        for file_name, id in target_files.items():
+            self.response = self.get(url=self.base_url + '/efconnect/files', params={
+                'cmd': 'rm',
+                'targets[]': id
+            })
+
+    def copy_tomorrow_today(self, tomorrow_folder, today_folder):
+        src_folder_info = self.search_folder(root_folder_id=ROOT_FOLDER, folder_path=tomorrow_folder)
+        src_folder_id = list(src_folder_info.values())[0]
+        folder_content = self.get_file_info(filename=tomorrow_folder.split('/')[-1],
+                                            file_id=src_folder_id)
+        target_files = {item.get('name'): item.get('hash') for item in folder_content.get('files')}
+        target_folder_info = self.search_folder(root_folder_id=ROOT_FOLDER, folder_path=today_folder)
+        target_folder_id = list(target_folder_info.values())[0]
+        for filename, hash_id in target_files.items():
+            self.response = self.get(url=self.base_url + '/efconnect/files',
+                                     params={
+                                         'mode': '',
+                                         'cmd': 'paste',
+                                         'dst': target_folder_id,
+                                         'targets[]': hash_id,
+                                         'cut': 0,
+                                         'src': src_folder_id
+                                     },
+                                     headers={'Content-Type': 'application/json'})
+            print(json.dumps(self.response.json(), sort_keys=True, indent=4))
+            # print(str({
+            #     'cmd': 'paste',
+            #     'dst': target_folder_id,
+            #     'targets[]': id,
+            #     'cut': 0,
+            #     'src': src_folder_id
+            # }))

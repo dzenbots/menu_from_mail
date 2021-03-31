@@ -5,8 +5,9 @@ from prettytable import PrettyTable
 
 from mail_worker import *
 from site_worker import SiteWorker, BASE_SCHOOL_SITE_ADDR, SITE_LOGIN, SITE_PASSWORD, \
-    MENU_FOLDER_PATH_IN_SITE_STORAGE, ROOT_FOLDER
+    TOMORROW_MENU_FOLDER_PATH_IN_SITE_STORAGE, ROOT_FOLDER
 from mail_worker.mail_worker import get_public_key
+from site_worker.settings import TODAY_MENU_FOLDER_PATH_IN_SITE_STORAGE
 
 
 def get_menus_from_email():
@@ -35,20 +36,33 @@ def get_menus_from_email():
         with open(os.path.join(DIRECTORY_TO_SAVE_FILES, str(message.subject.uk) + '.pdf'), "wb") as fp:
             fp.write(message.file.content)
             fp.close()
-        table.add_row([str(message.id), message.subject.uk + ' ' + str(message.subject.date), message.date, message.from_user])
+        table.add_row(
+            [str(message.id), message.subject.uk + ' ' + str(message.subject.date), message.date, message.from_user])
     print(table)
     # mw.disconnect()
 
 
+def replace_today_menu_from_tomorrow():
+    sw = SiteWorker(base_url=BASE_SCHOOL_SITE_ADDR,
+                    login=SITE_LOGIN,
+                    password=SITE_PASSWORD)
+    # sw.delete_all_in_folder(folder_path=TODAY_MENU_FOLDER_PATH_IN_SITE_STORAGE)
+    sw.copy_tomorrow_today(tomorrow_folder=TOMORROW_MENU_FOLDER_PATH_IN_SITE_STORAGE,
+                           today_folder=TODAY_MENU_FOLDER_PATH_IN_SITE_STORAGE)
+    pass
+
+
 if __name__ == "__main__":
-    get_menus_from_email()
-    for filename in os.listdir('./Menus'):
-        pdf_compressor = PdfCompressor(public_api_key=get_public_key(datetime.date.today()))
-        pdf_compressor.compress_file(filepath=os.path.join('./Menus/', filename),
-                                     output_directory_path='./Menus_small')
-    sw = SiteWorker(base_url=BASE_SCHOOL_SITE_ADDR, login=SITE_LOGIN, password=SITE_PASSWORD)
-    if sw.authorized:
-        sw.upload_file(folder_path=MENU_FOLDER_PATH_IN_SITE_STORAGE,
-                       files=[os.path.join('./Menus_small', file) for file in os.listdir('./Menus_small')],
-                       root_folder_id=ROOT_FOLDER)
+    # get_menus_from_email()
+    # for filename in os.listdir('./Menus'):
+    #     pdf_compressor = PdfCompressor(public_api_key=get_public_key(datetime.date.today()))
+    #     pdf_compressor.compress_file(filepath=os.path.join('./Menus/', filename),
+    #                                  output_directory_path='./Menus_small')
+    # sw = SiteWorker(base_url=BASE_SCHOOL_SITE_ADDR, login=SITE_LOGIN, password=SITE_PASSWORD)
+    # if sw.authorized:
+    #     sw.upload_file(folder_path=TOMORROW_MENU_FOLDER_PATH_IN_SITE_STORAGE,
+    #                    files=[os.path.join('./Menus_small', file) for file in os.listdir('./Menus_small')],
+    #                    root_folder_id=ROOT_FOLDER)
+    #
+    replace_today_menu_from_tomorrow()
     pass
