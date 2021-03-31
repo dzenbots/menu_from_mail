@@ -33,7 +33,6 @@ def start_process():
         return
     table = PrettyTable(['ID', 'Тема письма', 'Дата получения письма', 'Отправитель'])
     for message in mw.get_messages_from_folder():
-
         with open(os.path.join(DIRECTORY_TO_SAVE_FILES, str(message.subject.uk) + '.pdf'), "wb") as fp:
             fp.write(message.file.content)
             fp.close()

@@ -36,7 +36,7 @@ def get_message_subject(subject: str):
     return MessageSubject(
         theme=subject.split(' ')[0].upper(),
         uk='UK' + subject.split(' ')[1].split('УК')[-1],
-        date=datetime.datetime.strptime(subject.split(' ')[-1], "%d.%m.%y")
+        date=datetime.datetime.strptime(subject.split(' ')[-1], "%d.%m.%Y")
     )
 
 
