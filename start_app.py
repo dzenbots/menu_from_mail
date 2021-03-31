@@ -9,10 +9,6 @@ from site_worker import SiteWorker, BASE_SCHOOL_SITE_ADDR, SITE_LOGIN, SITE_PASS
 from mail_worker.mail_worker import get_public_key
 
 
-def get_correct_filename(email_subject):
-    return 'UK' + email_subject.split(' ')[1].split('УК')[-1] + '.pdf'
-
-
 def get_menus_from_email():
     mw = MailWorker(server=IMAP_SERVER, save_dir=DIRECTORY_TO_SAVE_FILES)
     if mw.authorize(login=LOGIN, password=PASSWORD):
@@ -43,10 +39,8 @@ def get_menus_from_email():
 
 if __name__ == "__main__":
     get_menus_from_email()
-    public_key = get_public_key(datetime.date.today())
-    # print(public_key)
     for filename in os.listdir('./Menus'):
-        pdf_compressor = PdfCompressor(public_api_key=PUBLIC_API_KEY1)
+        pdf_compressor = PdfCompressor(public_api_key=get_public_key(datetime.date.today()))
         pdf_compressor.compress_file(filepath=os.path.join('./Menus/', filename),
                                      output_directory_path='./Menus_small')
     sw = SiteWorker(base_url=BASE_SCHOOL_SITE_ADDR, login=SITE_LOGIN, password=SITE_PASSWORD)
